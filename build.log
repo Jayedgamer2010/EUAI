@@ -1,0 +1,77 @@
+nohup: ignoring input
+[  2%] Built target ggml-base
+[  6%] Built target ggml-cpu
+[  6%] Built target ggml
+[ 38%] Built target llama
+[ 38%] Built target build_info
+[ 38%] Building CXX object common/CMakeFiles/common.dir/arg.cpp.o
+In file included from /home/storage/EUAI/llama.cpp/common/arg.cpp:3:
+In file included from /home/storage/EUAI/llama.cpp/common/chat.h:6:
+In file included from /home/storage/EUAI/llama.cpp/common/jinja/parser.h:4:
+In file included from /home/storage/EUAI/llama.cpp/common/jinja/runtime.h:4:
+/home/storage/EUAI/llama.cpp/common/jinja/value.h:132:21: warning: function 'as_int' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  132 |     virtual int64_t as_int() const { throw std::runtime_error(type() + " is not an int value"); }
+      |                     ^
+/home/storage/EUAI/llama.cpp/common/jinja/value.h:133:20: warning: function 'as_float' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  133 |     virtual double as_float() const { throw std::runtime_error(type() + " is not a float value"); }
+      |                    ^
+/home/storage/EUAI/llama.cpp/common/jinja/value.h:134:20: warning: function 'as_string' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  134 |     virtual string as_string() const { throw std::runtime_error(type() + " is not a string value"); }
+      |                    ^
+/home/storage/EUAI/llama.cpp/common/jinja/value.h:135:18: warning: function 'as_bool' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  135 |     virtual bool as_bool() const { throw std::runtime_error(type() + " is not a bool value"); }
+      |                  ^
+/home/storage/EUAI/llama.cpp/common/jinja/value.h:136:40: warning: function 'as_array' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  136 |     virtual const std::vector<value> & as_array() const { throw std::runtime_error(type() + " is not an array value"); }
+      |                                        ^
+/home/storage/EUAI/llama.cpp/common/jinja/value.h:137:58: warning: function 'as_ordered_object' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  137 |     virtual const std::vector<std::pair<value, value>> & as_ordered_object() const { throw std::runtime_error(type() + " is not an object value"); }
+      |                                                          ^
+/home/storage/EUAI/llama.cpp/common/jinja/value.h:138:19: warning: function 'invoke' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  138 |     virtual value invoke(const func_args &) const { throw std::runtime_error(type() + " is not a function value"); }
+      |                   ^
+/home/storage/EUAI/llama.cpp/common/jinja/value.h:141:35: warning: function 'get_builtins' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  141 |     virtual const func_builtins & get_builtins() const {
+      |                                   ^
+/home/storage/EUAI/llama.cpp/common/jinja/value.h:145:18: warning: function 'has_key' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  145 |     virtual bool has_key(const value &) { throw std::runtime_error(type() + " is not an object value"); }
+      |                  ^
+/home/storage/EUAI/llama.cpp/common/jinja/value.h:146:18: warning: function 'insert' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  146 |     virtual void insert(const value & /* key */, const value & /* val */) { throw std::runtime_error(type() + " is not an object value"); }
+      |                  ^
+/home/storage/EUAI/llama.cpp/common/jinja/value.h:147:21: warning: function 'at' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  147 |     virtual value & at(const value & /* key */, value & /* default_val */) { throw std::runtime_error(type() + " is not an object value"); }
+      |                     ^
+/home/storage/EUAI/llama.cpp/common/jinja/value.h:148:21: warning: function 'at' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  148 |     virtual value & at(const value & /* key */) { throw std::runtime_error(type() + " is not an object value"); }
+      |                     ^
+/home/storage/EUAI/llama.cpp/common/jinja/value.h:149:21: warning: function 'at' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  149 |     virtual value & at(const std::string & /* key */, value & /* default_val */) { throw std::runtime_error(type() + " is not an object value"); }
+      |                     ^
+/home/storage/EUAI/llama.cpp/common/jinja/value.h:150:21: warning: function 'at' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  150 |     virtual value & at(const std::string & /* key */) { throw std::runtime_error(type() + " is not an object value"); }
+      |                     ^
+/home/storage/EUAI/llama.cpp/common/jinja/value.h:151:21: warning: function 'at' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  151 |     virtual value & at(int64_t /* idx */, value & /* default_val */) { throw std::runtime_error(type() + " is not an array value"); }
+      |                     ^
+/home/storage/EUAI/llama.cpp/common/jinja/value.h:152:21: warning: function 'at' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  152 |     virtual value & at(int64_t /* idx */) { throw std::runtime_error(type() + " is not an array value"); }
+      |                     ^
+In file included from /home/storage/EUAI/llama.cpp/common/arg.cpp:3:
+In file included from /home/storage/EUAI/llama.cpp/common/chat.h:6:
+In file included from /home/storage/EUAI/llama.cpp/common/jinja/parser.h:4:
+/home/storage/EUAI/llama.cpp/common/jinja/runtime.h:110:19: warning: function 'execute_impl' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  110 |     virtual value execute_impl(context &) { throw std::runtime_error("cannot exec " + type()); }
+      |                   ^
+/home/storage/EUAI/llama.cpp/common/jinja/runtime.h:146:11: warning: function 'execute_impl' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  146 |     value execute_impl(context &) override {
+      |           ^
+/home/storage/EUAI/llama.cpp/common/jinja/runtime.h:198:11: warning: function 'execute_impl' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  198 |     value execute_impl(context &) override {
+      |           ^
+/home/storage/EUAI/llama.cpp/common/jinja/runtime.h:212:11: warning: function 'execute_impl' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  212 |     value execute_impl(context &) override {
+      |           ^
+/home/storage/EUAI/llama.cpp/common/jinja/runtime.h:504:11: warning: function 'execute_impl' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+  504 |     value execute_impl(context &) override {
+      |           ^
