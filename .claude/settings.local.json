@@ -68,7 +68,8 @@
       "Bash(cp /home/storage/shared/projects/TERMUX_BACKUP/EUAI/euai/config/* /data/data/com.termux/files/home/euai/config/)",
       "Bash(/data/data/com.termux/files/home/euai/build/euai --config /data/data/com.termux/files/home/euai/config/ --model /data/data/com.termux/files/home/euai/models/qwen2.5-0.5b.gguf)",
       "Bash(mkdir -p /data/data/com.termux/files/home/storage)",
-      "Bash(cp -r /home/storage/shared/projects/TERMUX_BACKUP/EUAI /data/data/com.termux/files/home/storage/)"
+      "Bash(cp -r /home/storage/shared/projects/TERMUX_BACKUP/EUAI /data/data/com.termux/files/home/storage/)",
+      "Bash(wc -l /home/storage/EUAI/euai/src/*/*.cpp /home/storage/EUAI/euai/src/*.cpp)"
     ]
   }
 }

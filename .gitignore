@@ -1,0 +1,68 @@
+# Build artifacts
+build/
+cmake-build-*/
+*.o
+*.obj
+*.out
+*.exe
+
+# Compiled binaries
+euai
+euai_test
+euai_core_test
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+
+# PyTorch / ML artifacts
+checkpoints/
+*.ckpt
+*.pt
+*.pth
+*.bin
+
+# Project-specific data and models
+python/data/
+python/checkpoints/
+python/*.bin
+config/cache.db
+config/*.bin
+
+# Claude Code
+.claude/settings.local.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# User-specific
+.env
+*.env
+
+# Temporary files
+*.tmp
+*.temp
