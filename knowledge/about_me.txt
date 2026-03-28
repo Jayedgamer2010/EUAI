@@ -1,0 +1,7 @@
+Name: Jayed Sheikh
+Age: 16
+Location: Bangladesh, Class 10
+Skills: AI, game development, Minecraft plugins, SaaS, web development
+Projects: EUAI, HollowVerdict (Minecraft plugin), Facility Zero (horror game)
+Tools: Godot 4, Claude Code, Supabase, n8n, Oracle Cloud
+Goal: Financial independence through tech products

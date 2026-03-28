@@ -1,0 +1,10 @@
+# EUAI Python dependencies
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+pybind11==0.12.0
+numpy>=1.24.0
+torch>=2.0.0  # For training only
+sentencepiece  # For tokenizer training
+datasets  # For training data
+transformers>=4.35.0

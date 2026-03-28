@@ -15,8 +15,7 @@ public:
                          int top_k = 40);
     bool is_loaded() const;
 private:
-    llama_model*   model   = nullptr;
-    llama_context* ctx     = nullptr;
-    llama_sampler* sampler = nullptr;
-    bool loaded = false;
+    std::string model_path;
+    bool loaded;
+    std::string escape_for_shell(const std::string& s);
 };

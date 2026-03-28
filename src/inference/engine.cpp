@@ -1,101 +1,130 @@
 #include "engine.h"
-#include "llama.h"
+#include <cstdio>
 #include <iostream>
+#include <sstream>
 #include <fstream>
-#include <cstring>
 
-InferenceEngine::InferenceEngine(const std::string& model_path) {
-    loaded = false;
-
+InferenceEngine::InferenceEngine(const std::string& model_path) : loaded(false) {
     std::ifstream f(model_path);
-    if (!f.good()) {
-        std::cerr << "[ENGINE] Model not found: " << model_path << "\n";
-        std::cerr << "[ENGINE] Running in router-only mode.\n";
-        return;
+    if (f.good()) {
+        loaded = true;
+        this->model_path = model_path;
+        std::cerr << "[InferenceEngine] Model ready: " << model_path << "\n";
+    } else {
+        std::cerr << "[InferenceEngine] Model not found: " << model_path << "\n";
     }
-    f.close();
-
-    llama_backend_init();
-
-    llama_model_params mparams = llama_model_default_params();
-    mparams.n_gpu_layers = 0;
-    model = llama_model_load_from_file(model_path.c_str(), mparams);
-    if (!model) {
-        std::cerr << "[ENGINE] Failed to load model\n";
-        llama_backend_free();
-        return;
-    }
-
-    llama_context_params cparams = llama_context_default_params();
-    cparams.n_ctx      = 512;
-    cparams.n_threads  = 2;
-    cparams.n_threads_batch = 2;
-    ctx = llama_init_from_model(model, cparams);
-    if (!ctx) {
-        std::cerr << "[ENGINE] Failed to create context\n";
-        llama_model_free(model);
-        llama_backend_free();
-        model = nullptr;
-        return;
-    }
-
-    auto sparams = llama_sampler_chain_default_params();
-    sampler = llama_sampler_chain_init(sparams);
-    llama_sampler_chain_add(sampler, llama_sampler_init_top_k(40));
-    llama_sampler_chain_add(sampler, llama_sampler_init_temp(0.8f));
-    llama_sampler_chain_add(sampler, llama_sampler_init_dist(42));
-
-    loaded = true;
-    std::cerr << "[ENGINE] Qwen2.5 0.5B loaded OK\n";
 }
 
-InferenceEngine::~InferenceEngine() {
-    if (sampler) llama_sampler_free(sampler);
-    if (ctx)     llama_free(ctx);
-    if (model)   llama_model_free(model);
-    llama_backend_free();
-}
+InferenceEngine::~InferenceEngine() {}
 
-bool InferenceEngine::is_loaded() const { return loaded; }
+bool InferenceEngine::is_loaded() const {
+    return loaded;
+}
 
 std::string InferenceEngine::generate(const std::string& prompt,
-                                       int max_tokens,
-                                       float temperature,
-                                       int top_k) {
-    if (!loaded) return "";
+                                     int max_tokens,
+                                     float temperature,
+                                     int top_k) {
+    if (!loaded) return "[ERROR] Model not loaded";
 
-    llama_sampler_reset(sampler);
-
-    const int n_prompt = -llama_tokenize(llama_model_get_vocab(model), prompt.c_str(),
-                                          prompt.size(), nullptr, 0, true, true);
-    std::vector<llama_token> tokens(n_prompt);
-    llama_tokenize(llama_model_get_vocab(model), prompt.c_str(), prompt.size(),
-                   tokens.data(), tokens.size(), true, true);
-
-    llama_batch batch = llama_batch_get_one(tokens.data(), tokens.size());
-    if (llama_decode(ctx, batch)) {
-        std::cerr << "[ENGINE] Decode failed\n";
-        return "";
+    // Load system prompt from file
+    std::string system_prompt = "You are EUAI. Answer concisely.";
+    std::ifstream sp_file("config/system_prompt.txt");
+    if (sp_file.good()) {
+        std::string sp_content((std::istreambuf_iterator<char>(sp_file)),
+                                std::istreambuf_iterator<char>());
+        if (!sp_content.empty()) system_prompt = sp_content;
     }
 
-    std::string result;
-    char buf[256];
+    // Format prompt for Qwen2.5 chat template
+    std::ostringstream oss;
+    oss << "system\n" << system_prompt << "\n\n";
+    oss << "user\n" << prompt << "\n\n";
+    oss << "assistant";
+    std::string formatted = oss.str();
 
-    for (int i = 0; i < max_tokens; i++) {
-        llama_token tok = llama_sampler_sample(sampler, ctx, -1);
-        if (llama_vocab_is_eog(llama_model_get_vocab(model), tok)) break;
+    // Escape the prompt for safe shell execution
+    std::string escaped = escape_for_shell(formatted);
 
-        int len = llama_token_to_piece(llama_model_get_vocab(model), tok, buf, sizeof(buf), 0, false);
-        if (len > 0) {
-            std::string piece(buf, len);
-            std::cout << piece << std::flush;
-            result += piece;
+    // Build command: pass prompt as argument to llama-simple
+    // Use -p flag to explicitly set prompt
+    // Added: repeat penalty, top_p, and better sampling to avoid loops
+    // Note: llama.cpp uses underscores for some flags (--top_p, --repeat_penalty)
+    std::string cmd = "/home/storage/EUAI/llama.cpp/build/bin/llama-simple -m " + model_path +
+                      " -n " + std::to_string(max_tokens) +
+                      " --temp " + std::to_string(temperature) +
+                      " --top-k " + std::to_string(top_k) +
+                      " --top_p 0.90" +
+                      " --repeat_penalty 1.50" +
+                      " --repeat_last_n 64" +
+                      " -p " + escaped +
+                      " 2>/dev/null";
+
+    FILE* pipe = popen(cmd.c_str(), "r");
+    if (!pipe) return "[ERROR] Failed to run llama-simple";
+
+    char buf[4096];
+    std::string output;
+    while (fgets(buf, sizeof(buf), pipe)) {
+        output += buf;
+    }
+    pclose(pipe);
+
+    // Extract assistant response: find the assistant marker that is preceded by a newline or start of string
+    // The marker is typically "\nassistant" or just "assistant" at the end of the prompt
+    size_t assistant_pos = std::string::npos;
+    size_t pos = output.find("\nassistant");
+    if (pos != std::string::npos) {
+        assistant_pos = pos + 1; // point to 'a' of assistant
+    } else {
+        pos = output.find("assistant");
+        // Check if it's a standalone marker (preceded by newline or start, and followed by space or end)
+        while (pos != std::string::npos) {
+            if ((pos == 0 || output[pos-1] == '\n' || output[pos-1] == ' ') &&
+                (pos + 9 >= output.size() || std::isspace(output[pos+9]))) {
+                assistant_pos = pos;
+                break;
+            }
+            pos = output.find("assistant", pos + 1);
         }
-
-        llama_batch next = llama_batch_get_one(&tok, 1);
-        if (llama_decode(ctx, next)) break;
     }
-    std::cout << "\n";
-    llama_memory_clear(llama_get_memory(ctx), false);
+
+    if (assistant_pos != std::string::npos) {
+        output = output.substr(assistant_pos + 9); // skip "assistant"
+    } else {
+        // If no assistant marker found, return original trimmed (unlikely)
+    }
+
+    // Remove EOS token and everything after
+    size_t eos_pos = output.find("<|endoftext|>");
+    if (eos_pos != std::string::npos) {
+        output.resize(eos_pos);
+    }
+
+    // Also check for "system" re-appearance (multi-turn issue)
+    size_t system_pos = output.find("system\n");
+    if (system_pos != std::string::npos) {
+        output = output.substr(0, system_pos);
+    }
+
+    // Trim whitespace
+    output.erase(0, output.find_first_not_of(" \t\n\r"));
+    if (!output.empty()) {
+        output.erase(output.find_last_not_of(" \t\n\r") + 1);
+    }
+
+    return output.empty() ? "[EMPTY RESPONSE]" : output;
+}
+
+// Helper: escape a string for safe inclusion in double-quoted shell argument
+std::string InferenceEngine::escape_for_shell(const std::string& s) {
+    std::string result = "\"";
+    for (char c : s) {
+        if (c == '\\' || c == '"') {
+            result += '\\';
+        }
+        result += c;
+    }
+    result += "\"";
     return result;
 }

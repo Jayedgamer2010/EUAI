@@ -1,0 +1,13 @@
+{
+  "architecture": "transformer",
+  "dim": 1024,
+  "n_layers": 24,
+  "n_heads": 16,
+  "n_kv_groups": 4,
+  "vocab_size": 32000,
+  "max_seq_len": 2048,
+  "rope_theta": 10000.0,
+  "use_gqa": true,
+  "use_swiglu": true,
+  "use_rmsnorm": true
+}

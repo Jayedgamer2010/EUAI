@@ -1,0 +1,41 @@
+{
+  "description": "EUAI Router classification rules",
+  "math_triggers": [
+    "calculate",
+    "solve",
+    "what is \\d+\\s*[+\\-*/^]",
+    "\\d+\\s*[+\\-*/^]\\s*\\d+",
+    "integrate",
+    "differentiate",
+    "derivative",
+    "limit",
+    "sum",
+    "product",
+    "factor",
+    "simplify",
+    "\\bmath\\b",
+    "\\balgebra\\b",
+    "\\bgeometry\\b"
+  ],
+  "safety_patterns": [
+    "kill",
+    "die",
+    "suicide",
+    "murder",
+    "bomb",
+    "terrorist",
+    "attack",
+    "weapon",
+    "explosive",
+    "hack",
+    "virus",
+    "malware",
+    "steal",
+    "cheat",
+    "illegal",
+    "abuse",
+    "violence",
+    "sexual"
+  ],
+  "cache_ttl_seconds": 3600
+}

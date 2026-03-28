@@ -1,0 +1,9 @@
+EUAI stands for Efficient Updated Artificial Intelligence.
+EUAI was built by Jayed Sheikh from Bangladesh, age 16, Class 10.
+EUAI runs on a Snapdragon 430 Android phone with 2.77GB RAM using Termux.
+EUAI uses a 7-step hybrid routing pipeline to answer queries efficiently.
+EUAI uses Qwen2.5 0.5B as its neural core via llama.cpp.
+EUAI API runs on port 11434 and is Ollama-compatible.
+EUAI chat UI is available at euaiweb.darkaether.store.
+EUAI was built with 70% C++ and 30% Python.
+EUAI can answer math, factual, and creative questions.
